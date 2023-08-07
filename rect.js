@@ -10,11 +10,22 @@ let h = canvas.height;
 const ctx = canvas.getContext('2d');
 
 const cen = createRect(ctx);
-const top1 = createRect(ctx, cen, 'top');
-const toptop1 = createRect(ctx, top1, 'top');
-const right1 = createRect(ctx, cen, 'right');
-const bottom1 = createRect(ctx, cen, 'bottom');
-const left1 = createRect(ctx, cen, 'left');
+
+// const top1 = createRect(ctx, cen, 'top');
+// const top2 = createRect(ctx, cen, 'top');
+// const top3 = createRect(ctx, cen, 'top');
+// const toptop1 = createRect(ctx, top1, 'top');
+// const right1 = createRect(ctx, cen, 'right');
+// const bottom1 = createRect(ctx, cen, 'bottom');
+// const left1 = createRect(ctx, cen, 'left');
+
+for ( let side of ['top', 'right', 'bottom', 'left'] ) {
+    let spaceLeft = true;
+    while  (spaceLeft) {
+        if (!createRect(ctx, cen, side)) spaceLeft = false;
+    }
+}
+
 
 function randb(min, max) {
   if (max == null) {
@@ -48,6 +59,11 @@ function createRect(ctx, refRect, side) {
         s = 200;
     }
     else {
+
+        if (refRect.spaces[side].self < 1) {
+            return;
+        }
+
         s = randb(
           50,
           refRect.spaces[side].totalX < refRect.spaces[side].totalY
