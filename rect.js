@@ -11,20 +11,28 @@ const ctx = canvas.getContext('2d');
 
 const cen = createRect(ctx);
 
-// const top1 = createRect(ctx, cen, 'top');
-// const top2 = createRect(ctx, cen, 'top');
-// const top3 = createRect(ctx, cen, 'top');
-// const toptop1 = createRect(ctx, top1, 'top');
-// const right1 = createRect(ctx, cen, 'right');
-// const bottom1 = createRect(ctx, cen, 'bottom');
-// const left1 = createRect(ctx, cen, 'left');
+const top1 = createRect(ctx, cen, 'top');
+const top2 = createRect(ctx, cen, 'top');
+const top3 = createRect(ctx, cen, 'top');
+const toptop1 = createRect(ctx, top1, 'top');
+const right1 = createRect(ctx, cen, 'right');
+const bottom1 = createRect(ctx, cen, 'bottom');
+const left1 = createRect(ctx, cen, 'left');
 
-for ( let side of ['top', 'right', 'bottom', 'left'] ) {
-    let spaceLeft = true;
-    while  (spaceLeft) {
-        if (!createRect(ctx, cen, side)) spaceLeft = false;
-    }
-}
+// for ( let side of ['top', 'right', 'bottom', 'left'] ) {
+//     let spaceLeft = true;
+//     while  (spaceLeft) {
+//         if (!createRect(ctx, cen, side)) spaceLeft = false;
+//     }
+// }
+
+// Problems Left:
+// square going out of boundary
+// square minimum width is too big to fill the boundary
+// square on top of square A will overlap to sqare on top on sqare B
+// square on right of square A will defenitely overlap to square on right of square A
+    // we need a way to tell square A about the fact that some other square came in and now
+        // now square A's totalX or totalY is reduced ( maybe to 0 )
 
 
 function randb(min, max) {
@@ -60,16 +68,18 @@ function createRect(ctx, refRect, side) {
     }
     else {
 
-        if (refRect.spaces[side].self < 1) {
-            return;
-        }
+        // return undefined if there's no space left on surface of the main square
+        if (refRect.spaces[side].self < 1) return;
 
-        s = randb(
-          50,
-          refRect.spaces[side].totalX < refRect.spaces[side].totalY
+        const max = refRect.spaces[side].totalX < refRect.spaces[side].totalY
             ? refRect.spaces[side].totalX
             : refRect.spaces[side].totalY
-        );
+
+        // return undefined if there's no space left for the new square to fit on
+        if (max < 1) return;
+        else if (max < 50) s = max;
+        else s = randb(50, max);
+
         switch (side) {
 
             case 'top':
